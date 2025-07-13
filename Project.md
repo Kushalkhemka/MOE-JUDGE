@@ -1,0 +1,51 @@
+## **The MoE-Judge Framework: A Principled Approach to Heterogeneous Evaluation**
+
+## **Abstract**
+
+The paradigm of using Large Language Models as evaluators (LLM-as-a-Judge) has emerged as a scalable alternative to human annotation, yet its reliability is critically undermined by systemic issues. Current evaluation frameworks suffer from a significant "measurement imbalance," where technical correctness is privileged over crucial human-centered, contextual, and temporal dimensions. They are further compromised by inherent cognitive biases such as positional, verbosity, and self-enhancement biases, which distort judgments and erode trust. Moreover, most judge systems are monolithic, text-only, and lack the flexibility to adapt to diverse, real-world multimodal tasks. To address these multifaceted challenges, this paper introduces MoE-Judge, a modular, multi-dimensional, and multimodal evaluation framework. MoE-Judge implements a Symbolic Mixture-of-Experts (MoE) architecture that dynamically routes evaluation tasks to specialized expert agents based on instance-level skill requirements. A key innovation is Dynamic Policy Extraction: the framework uses an LLM to automatically determine the relevant evaluation criteria (policies) and their weights for each specific task, instead of relying on fixed dimensions. This modularity enables comprehensive and context-aware assessment. The framework incorporates a suite of robust bias mitigation techniques, including response permutation, identity masking, and a dedicated Panel of Judges that acts as a second-layer check to ensure fairness and logical consistency. Natively supporting inputs across text and image modalities, MoE-Judge offers unprecedented flexibility and real-world applicability. The framework operates in a zero-shot, plug-and-play manner, requiring no specialized model training and instead leveraging the powerful capabilities of existing LLMs as expert agents. Crucially, the framework integrates an adaptive feedback loop and a synthetic data generation engine, transforming the evaluator from a static tool into a self-improving system that produces high-quality, richly annotated benchmark datasets. This work presents the complete architecture of MoE-Judge, outlines a comprehensive empirical validation strategy, and demonstrates its potential to establish a new standard for fair, reliable, and human-aligned AI evaluation.
+
+## **1\. Introduction: The Measurement Imbalance in AI Evaluation**
+
+### **1.1. The Promise and Peril of LLM-as-a-Judge**
+
+The rapid scaling of Large Language Models (LLMs) has catalyzed a paradigm shift in automated evaluation. The LLM-as-a-Judge approach, wherein a powerful LLM is prompted to assess the quality of another model's output, has become a prominent alternative to costly and time-intensive human evaluation. This method has gained traction due to its scalability, cost-effectiveness, and a demonstrated high correlation with human preferences in various tasks, particularly for open-ended generation where traditional metrics like BLEU or ROUGE fall short. By leveraging the nuanced semantic understanding of models like GPT-4, this paradigm promises to move beyond brittle, surface-level statistical comparisons toward more holistic and meaningful assessments of quality. This capability is not merely an academic convenience; it is a critical enabler for the development, alignment, and safe deployment of the next generation of complex AI, including highly autonomous agentic systems whose behaviors are difficult to evaluate with predefined test cases.  
+
+### **1.2. A Critique of Current Evaluation Paradigms: Monolithic, Biased, and Narrowly Focused**
+
+Despite its promise, the LLM-as-a-Judge paradigm is fraught with fundamental limitations that threaten its validity and utility. A central issue, as identified by Meimandi et al., is a systemic "measurement imbalance" in which evaluation frameworks disproportionately prioritize easily quantifiable technical metrics over other dimensions critical to real-world deployment success. Their systematic review of recent literature reveals that technical metrics dominate assessments (present in 83% of papers), while human-centered (30%), safety (53%), and contextual factors remain peripheral. [\[1\]](https://arxiv.org/pdf/2506.02064) This creates a dangerous disconnect between success on a benchmark and value in a real-world application, where factors like user trust, contextual appropriateness, and temporal consistency are paramount.  
+
+This measurement imbalance is one symptom of a deeper set of interconnected problems that form a vicious cycle of poor evaluation. The lack of robust, multi-dimensional benchmarks compels researchers to rely on narrow technical metrics. This, in turn, incentivizes the development of monolithic models optimized for these narrow criteria. The resulting models, while performing well on paper, often fail in complex, real-world scenarios. Because these failures are not captured by the prevailing evaluation frameworks, there is little signal to guide the creation of better, more comprehensive benchmarks, thus perpetuating a cycle that stifles genuine progress toward safe and beneficial AI.
+
+This research identifies five critical, interdependent limitations of the current LLM-as-a-Judge landscape:
+
+1. **Systemic Biases:** LLM judges are susceptible to a range of cognitive biases that mirror human frailties, compromising the fairness and reliability of their judgments. These include **positional bias**, where models favor the first or last response in a list irrespective of quality; **Verbosity bias**, a preference for longer answers ; and  **Self-enhancement bias**, where a model family preferentially scores its own outputs.  
+
+2. **Evaluation Imbalance:** As noted, current systems over-index on technical correctness while under-representing human-aligned qualities like clarity, politeness, trustworthiness, and safety.
+
+3. **Lack of Modularity and Flexibility:** Most judge systems are monolithic, employing a single, general-purpose LLM for all evaluation tasks. This one-size-fits-all approach is ill-suited for the diverse requirements of different domains (e.g., medicine, finance) and tasks (e.g., creative writing vs. code generation).  
+
+4. **Limited Multimodal Capabilities:** The vast majority of existing judges are confined to text-only evaluation. This severely limits their applicability in real-world scenarios, which are inherently multimodal and involve reasoning over text and images.  
+
+5. **Scarcity of High-Quality Benchmarks:** The field suffers from a dearth of richly annotated datasets specifically designed for training and meta-evaluating judge models. This data scarcity hinders the development of specialized, open-source judges and makes robust, comparative benchmarking difficult.  
+
+### **1.3. Our Contribution: MoE-Judge, A Modular, Multi-Dimensional, and Bias-Aware Framework**
+
+This paper introduces **MoE-Judge**, a comprehensive evaluation framework designed to directly address and break the cycle of poor evaluation. MoE-Judge is architected to be modular, multi-dimensional, bias-aware, and self-improving, representing a significant step toward more reliable and human-aligned AI assessment.
+
+Our primary contributions are centered around five key innovations:
+
+* **Symbolic Mixture-of-Experts (MoE) Architecture:** We replace the monolithic judge with a dynamic, skill-based MoE system that operates in a zero-shot, plug-and-play fashion. Specialized evaluator agents are recruited on an instance-by-instance basis, ensuring that the right expertise is applied to each unique evaluation task without requiring any model training.  
+
+* **Dynamic Multi-Dimensional Judgment:** To counteract the measurement imbalance, our framework moves beyond fixed evaluation criteria. It dynamically extracts relevant evaluation policies (e.g., Factual Accuracy, Clarity, Image-Text Coherence) and their corresponding weights for each specific task, providing a holistic and interpretable assessment of model performance.
+
+* **Comprehensive Bias Mitigation:** We implement a multi-layered defense against systemic biases. This includes proactive techniques like response permutation and identity masking, as well as a reactive "Panel of Judges" that provides a second-order review to ensure fairness and robustness.  
+
+* **Native Multimodal Support:** MoE-Judge is designed from the ground up to process and evaluate outputs containing text and images, reflecting the growing complexity of real-world AI applications.  
+
+* **Adaptive Feedback and Synthetic Data Generation:** MoE-Judge is not a static tool but a dynamic ecosystem. It incorporates an adaptive feedback loop to identify systemic failures and, most critically, uses its own sophisticated evaluation process to generate high-quality, richly annotated benchmark datasets. This feature directly addresses the data scarcity problem and provides a mechanism for continuous self-improvement, breaking the vicious cycle that currently constrains the field.  
+
+This paper presents the complete architecture of the MoE-Judge framework, details its underlying principles and components, and proposes a rigorous empirical methodology for its validation. By doing so, we aim to provide the research community with a powerful new tool and a new paradigm for AI evaluation that is more fair, reliable, and aligned with human values.
+
+**Reference** \- 
+
+1. [Kiana Jafari Meimandi](https://arxiv.org/search/cs?searchtype=author&query=Meimandi,+K+J), [Gabriela Aránguiz-Dias](https://arxiv.org/search/cs?searchtype=author&query=Ar%C3%A1nguiz-Dias,+G), [Grace Ra Kim](https://arxiv.org/search/cs?searchtype=author&query=Kim,+G+R), [Lana Saadeddin](https://arxiv.org/search/cs?searchtype=author&query=Saadeddin,+L), [Mykel J. Kochenderfer](https://arxiv.org/search/cs?searchtype=author&query=Kochenderfer,+M+J) \- The Measurement Imbalance in Agentic AI Evaluation Undermines Industry Productivity Claims ,1 June 2025

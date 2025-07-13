@@ -1,0 +1,7 @@
+# Core dependencies for MOE-AS-A-JUDGE profiling
+vllm>=0.2.7
+transformers>=4.36.0
+torch>=2.0.0
+tqdm>=4.64.0
+huggingface_hub>=0.20.0
+backoff>=2.2.1
